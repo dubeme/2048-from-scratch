@@ -1,0 +1,16 @@
+#game_board {
+    text-align: center;;
+}
+
+.row {
+    font-size: 1.25em;
+    float: left;
+    clear: both;
+}
+.column {
+    float: left;
+}
+.btns, .btns > * {
+    float: left;
+    clear: both;
+}

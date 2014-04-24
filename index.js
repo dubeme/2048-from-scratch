@@ -10,11 +10,28 @@ window.onload = function() {
 	var score = 0;
 	var freeSpaces = 16;
 
-	document.getElementById('start').onclick = Game2048();
+	var moved = false;
+	var lastDirection = null;
 
+	document.getElementById('start').onclick = function() {
+		Game2048();
+	}
+	document.getElementById('left').onclick = function() {
+		move(DIR_LEFT);
+	}
+	document.getElementById('right').onclick = function() {
+		move(DIR_RIGHT);
+	}
+	document.getElementById('up').onclick = function() {
+		move(DIR_UP);
+	}
+	document.getElementById('down').onclick = function() {
+		move(DIR_DOWN);
+	}
 
 	function Game2048() {
 		setup();
+		generateNumber();
 		gameLoop();
 	}
 
@@ -37,13 +54,15 @@ window.onload = function() {
 	}
 
 	function gameLoop() {
+		if(moved)
+			generateNumber();
 
 		for (var row = 0; row < 4; row++) {
 			for (var col = 0; col < 4; col++) {
 				htmlGameBoard[row][col].innerHTML = gameBoard[row][col];
 			};
 		};
-
+		
 		requestAnimationFrame(gameLoop)
 	}
 
@@ -58,7 +77,7 @@ window.onload = function() {
 				col = Math.floor(Math.random()*4);
 			}
 
-			gameBoard[row][col] = Math.random() >= 0.9 ? 2 : 4;
+			gameBoard[row][col] = (Math.random() <= 0.9) ? 2 : 4;
 			freeSpaces--;
 			return true;
 		}
@@ -67,14 +86,19 @@ window.onload = function() {
 	}
 
 	function move(dir) {
-		var line;
-		var move = false;
+		var lineBefore;
+		var lineAfter;
+
+		if (lastDirection === null || dir !== lastDirection) moved = true;
+		else moved = false;
 
 		for (var index = 0; index < 4; index++) {
-			line = getLine(dir,index);
-			line = solveLine(line);
-			setLine(dir, index, line);
+			lineBefore = getLine(dir,index);
+			lineAfter = solveLine(lineBefore);
+			setLine(dir, index, lineAfter);
 		}
+
+		return move;
 	}
 
 	function getLine(dir, index) {
